@@ -1,0 +1,852 @@
+{
+  "swagger" : "2.0",
+  "info" : {
+    "description" : "This is a simple Listing server.  Shows all job listings as well as the company and role it is linked to. Also get applications for the listing and which applicant has applied for the listing.",
+    "version" : "1.0.0",
+    "title" : "Rest Listing",
+    "license" : {
+      "name" : "Apache 2.0",
+      "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+    }
+  },
+  "tags" : [ {
+    "name" : "listing",
+    "description" : "Listing operations",
+    "externalDocs" : {
+      "description" : "Find out more",
+      "url" : "http://swagger.io"
+    }
+  }, {
+    "name" : "role",
+    "description" : "Role operations"
+  }, {
+    "name" : "applicant",
+    "description" : "Applicant operations",
+    "externalDocs" : {
+      "url" : "http://swagger.io"
+    }
+  } ],
+  "paths" : {
+    "/applicants" : {
+      "get" : {
+        "summary" : "Find applicant by email",
+        "description" : "Returns applicants",
+        "operationId" : "getApplicants",
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Applicant"
+            }
+          },
+          "400" : {
+            "description" : "Invalid email supplied"
+          },
+          "404" : {
+            "description" : "Applicant not found"
+          }
+        },
+        "tags" : [ "applicant" ]
+      },
+      "post" : {
+        "summary" : "Add an applicant",
+        "operationId" : "addApplicant",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "email",
+          "type" : "string",
+          "description" : "Applicant email",
+          "required" : true
+        }, {
+          "in" : "query",
+          "name" : "name",
+          "type" : "string",
+          "description" : "Applicant name",
+          "required" : true
+        }, {
+          "in" : "query",
+          "name" : "surname",
+          "type" : "string",
+          "description" : "Applicant surname",
+          "required" : true
+        }, {
+          "in" : "query",
+          "name" : "phone",
+          "type" : "string",
+          "description" : "Applicant phone number",
+          "required" : false
+        } ],
+        "responses" : {
+          "405" : {
+            "description" : "Invalid input"
+          }
+        },
+        "security" : [ {
+          "listing_auth" : [ "write:applicants", "read:applicants" ]
+        } ],
+        "tags" : [ "applicant" ]
+      },
+      "put" : {
+        "summary" : "Update an existing applicant",
+        "operationId" : "updateApplicant",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "email",
+          "type" : "string",
+          "description" : "Applicant email that need to be updated",
+          "required" : true
+        }, {
+          "in" : "query",
+          "name" : "name",
+          "type" : "string",
+          "description" : "Applicant name",
+          "required" : true
+        }, {
+          "in" : "query",
+          "name" : "surname",
+          "type" : "string",
+          "description" : "Applicant surname",
+          "required" : true
+        }, {
+          "in" : "query",
+          "name" : "phone",
+          "type" : "string",
+          "description" : "Applicant phone number",
+          "required" : false
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Invalid email supplied"
+          },
+          "404" : {
+            "description" : "Applicant not found"
+          }
+        },
+        "security" : [ {
+          "listing_auth" : [ "write:applicants", "read:applicants" ]
+        } ],
+        "tags" : [ "applicant" ]
+      },
+      "delete" : {
+        "summary" : "Deletes an applicant",
+        "operationId" : "removeApplicant",
+        "parameters" : [ {
+          "name" : "email",
+          "in" : "query",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Invalid email supplied"
+          },
+          "404" : {
+            "description" : "Applicant not found"
+          }
+        },
+        "security" : [ {
+          "listing_auth" : [ "write:applicants", "read:applicants" ]
+        } ],
+        "tags" : [ "applicant" ]
+      }
+    },
+    "/applicants/{email}" : {
+      "get" : {
+        "summary" : "Find applicant by email",
+        "description" : "Returns a single applicant",
+        "operationId" : "getApplicant",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "email",
+          "in" : "path",
+          "description" : "email of applicant to return",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Applicant"
+            }
+          },
+          "400" : {
+            "description" : "Invalid email supplied"
+          },
+          "404" : {
+            "description" : "Applicant not found"
+          }
+        },
+        "tags" : [ "applicant" ]
+      }
+    },
+    "/roles" : {
+      "get" : {
+        "tags" : [ "role" ],
+        "description" : "Returns all roles",
+        "operationId" : "getRoles",
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "role" ],
+        "summary" : "Delete role by ID",
+        "description" : "Remove role",
+        "operationId" : "removeRole",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "query",
+          "description" : "ID of role that needs to be removed",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Role"
+            }
+          },
+          "400" : {
+            "description" : "Invalid ID supplied"
+          },
+          "404" : {
+            "description" : "Role not found"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "role" ],
+        "summary" : "Add role",
+        "description" : "Update role details",
+        "operationId" : "updateRole",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "id",
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "in" : "query",
+          "name" : "companyid",
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "in" : "query",
+          "name" : "title",
+          "type" : "string"
+        }, {
+          "in" : "query",
+          "name" : "description",
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Role"
+            }
+          },
+          "400" : {
+            "description" : "Invalid ID supplied"
+          },
+          "404" : {
+            "description" : "Role not found"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "role" ],
+        "summary" : "Add role",
+        "operationId" : "addRole",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "companyid",
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "in" : "query",
+          "name" : "title",
+          "type" : "string"
+        }, {
+          "in" : "query",
+          "name" : "description",
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Role"
+            }
+          },
+          "400" : {
+            "description" : "Invalid ID supplied"
+          },
+          "404" : {
+            "description" : "Role not found"
+          }
+        }
+      }
+    },
+    "/roles/{id}" : {
+      "get" : {
+        "tags" : [ "role" ],
+        "description" : "Return role details",
+        "operationId" : "getRole",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "type" : "string",
+          "description" : "The role id",
+          "required" : true
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Role"
+            }
+          },
+          "400" : {
+            "description" : "Invalid id"
+          }
+        }
+      }
+    },
+    "/listings" : {
+      "get" : {
+        "tags" : [ "listing" ],
+        "summary" : "Get listings",
+        "produces" : [ "application/json" ],
+        "operationId" : "getListings",
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "listing" ],
+        "summary" : "add listing",
+        "operationId" : "addListing",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "companyid",
+          "type" : "integer",
+          "format" : "int64",
+          "required" : true
+        }, {
+          "in" : "query",
+          "name" : "listingid",
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "in" : "query",
+          "name" : "roleid",
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "listing" ],
+        "summary" : "Delete specific listing",
+        "description" : "This can only be done by the logged in user.",
+        "operationId" : "deleteUser",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "query",
+          "description" : "The id that needs to be deleted",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Invalid username supplied"
+          },
+          "404" : {
+            "description" : "User not found"
+          }
+        }
+      }
+    },
+    "/listings/{id}" : {
+      "get" : {
+        "tags" : [ "listing" ],
+        "summary" : "Get listing by listingid",
+        "operationId" : "getListing",
+        "produces" : [ "application/json", "application/xml" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "Listing id to get the specific listing",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Listing"
+            }
+          },
+          "400" : {
+            "description" : "Invalid id supplied"
+          },
+          "404" : {
+            "description" : "Listing not found"
+          }
+        }
+      }
+    },
+    "/listings/{id}/company" : {
+      "get" : {
+        "tags" : [ "listing" ],
+        "summary" : "Get listing company by listingid",
+        "operationId" : "getListingCompany",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "Listing id to get the specific listing",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Listing"
+            }
+          },
+          "400" : {
+            "description" : "Invalid id supplied"
+          },
+          "404" : {
+            "description" : "Listing not found"
+          }
+        }
+      }
+    },
+    "/listings/{id}/role" : {
+      "get" : {
+        "tags" : [ "listing" ],
+        "summary" : "Get listing role by listingid",
+        "operationId" : "getListingRole",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "Listing id to get the specific listing",
+          "required" : true,
+          "type" : "string"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Listing"
+            }
+          },
+          "400" : {
+            "description" : "Invalid id supplied"
+          },
+          "404" : {
+            "description" : "Listing not found"
+          }
+        }
+      }
+    },
+    "/companies" : {
+      "get" : {
+        "tags" : [ "company" ],
+        "summary" : "Get companies",
+        "produces" : [ "application/json" ],
+        "operationId" : "getCompanies",
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "company" ],
+        "summary" : "add company",
+        "operationId" : "addCompany",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "name",
+          "type" : "string"
+        }, {
+          "in" : "query",
+          "name" : "address",
+          "type" : "string"
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      },
+      "put" : {
+        "tags" : [ "company" ],
+        "summary" : "update company",
+        "operationId" : "updateCompany",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "companyid",
+          "type" : "integer",
+          "format" : "int64"
+        }, {
+          "in" : "query",
+          "name" : "name",
+          "type" : "string"
+        }, {
+          "in" : "query",
+          "name" : "address",
+          "type" : "string"
+        } ],
+        "responses" : {
+          "default" : {
+            "description" : "successful operation"
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "company" ],
+        "summary" : "Delete specific listing",
+        "operationId" : "deleteCompany",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "query",
+          "description" : "The id that needs to be deleted",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Invalid company supplied"
+          },
+          "404" : {
+            "description" : "Company not found"
+          }
+        }
+      }
+    },
+    "/companies/{id}" : {
+      "get" : {
+        "tags" : [ "company" ],
+        "summary" : "Get company by companyid",
+        "operationId" : "getCompany",
+        "produces" : [ "application/json" ],
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "Company id to get the specific listing",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Company"
+            }
+          },
+          "400" : {
+            "description" : "Invalid id supplied"
+          },
+          "404" : {
+            "description" : "Company not found"
+          }
+        }
+      }
+    },
+    "/applications" : {
+      "get" : {
+        "description" : "Returns applications",
+        "operationId" : "getApplications",
+        "produces" : [ "application/json" ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Application"
+            }
+          },
+          "400" : {
+            "description" : "Invalid id supplied"
+          },
+          "404" : {
+            "description" : "Application not found"
+          }
+        },
+        "tags" : [ "application" ]
+      },
+      "post" : {
+        "summary" : "Add an application",
+        "operationId" : "addApplication",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "listingid",
+          "type" : "integer",
+          "format" : "int64",
+          "description" : "Listing id",
+          "required" : true
+        }, {
+          "in" : "query",
+          "name" : "companyid",
+          "type" : "integer",
+          "format" : "int64",
+          "description" : "Company id",
+          "required" : true
+        }, {
+          "in" : "query",
+          "name" : "applicantid",
+          "type" : "integer",
+          "format" : "int64",
+          "description" : "Applicant id",
+          "required" : true
+        } ],
+        "responses" : {
+          "405" : {
+            "description" : "Invalid input"
+          }
+        },
+        "security" : [ {
+          "listing_auth" : [ "write:applications", "read:applications" ]
+        } ],
+        "tags" : [ "application" ]
+      },
+      "put" : {
+        "summary" : "Update an existing application",
+        "operationId" : "updateApplication",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "applicationid",
+          "type" : "string",
+          "description" : "Applicant email that need to be updated",
+          "required" : true
+        }, {
+          "in" : "query",
+          "name" : "name",
+          "type" : "string",
+          "description" : "Applicant name",
+          "required" : true
+        }, {
+          "in" : "query",
+          "name" : "id",
+          "type" : "integer",
+          "format" : "int64",
+          "description" : "Applicant id",
+          "required" : true
+        }, {
+          "in" : "query",
+          "name" : "listingid",
+          "type" : "integer",
+          "format" : "int64",
+          "description" : "Listing id to get correct listing",
+          "required" : false
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Invalid id supplied"
+          },
+          "404" : {
+            "description" : "Application not found"
+          }
+        },
+        "security" : [ {
+          "listing_auth" : [ "write:applications", "read:applications" ]
+        } ],
+        "tags" : [ "application" ]
+      },
+      "delete" : {
+        "summary" : "Deletes an application",
+        "operationId" : "removeApplication",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "query",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "400" : {
+            "description" : "Invalid id supplied"
+          },
+          "404" : {
+            "description" : "Application not found"
+          }
+        },
+        "security" : [ {
+          "listing_auth" : [ "write:applications", "read:applications" ]
+        } ],
+        "tags" : [ "application" ]
+      }
+    },
+    "/applications/{id}" : {
+      "get" : {
+        "summary" : "Find application by id",
+        "description" : "Returns a single application",
+        "operationId" : "getApplication",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "id of application to return",
+          "required" : true,
+          "type" : "integer",
+          "format" : "int64"
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "successful operation",
+            "schema" : {
+              "$ref" : "#/definitions/Application"
+            }
+          },
+          "400" : {
+            "description" : "Invalid id supplied"
+          },
+          "404" : {
+            "description" : "Application not found"
+          }
+        },
+        "tags" : [ "application" ]
+      }
+    }
+  },
+  "securityDefinitions" : {
+    "listing_auth" : {
+      "type" : "oauth2",
+      "authorizationUrl" : "http://petstore.swagger.io/oauth/dialog",
+      "flow" : "implicit",
+      "scopes" : {
+        "write:applicants" : "modify applicants",
+        "read:applicants" : "read your applicants",
+        "write:listings" : "modify listings",
+        "read:listings" : "read your listings",
+        "write:roles" : "modify roles",
+        "read:roles" : "read your roles",
+        "write:applications" : "modify applications",
+        "read:applications" : "read your applications"
+      }
+    }
+  },
+  "definitions" : {
+    "Application" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "applicant" : {
+          "type" : "object"
+        },
+        "listing" : {
+          "type" : "object"
+        }
+      }
+    },
+    "Role" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "title" : {
+          "type" : "string"
+        },
+        "description" : {
+          "type" : "string",
+          "description" : "Role description"
+        }
+      },
+      "xml" : {
+        "name" : "Role"
+      }
+    },
+    "Company" : {
+      "type" : "object",
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "name" : {
+          "type" : "string"
+        },
+        "address" : {
+          "type" : "string"
+        }
+      },
+      "xml" : {
+        "name" : "Company"
+      }
+    },
+    "Applicant" : {
+      "type" : "object",
+      "required" : [ "name", "surname", "email", "phone" ],
+      "properties" : {
+        "name" : {
+          "type" : "string",
+          "example" : "Tim"
+        },
+        "category" : {
+          "$ref" : "#/definitions/Applicant"
+        },
+        "surname" : {
+          "type" : "string",
+          "example" : "Tam"
+        },
+        "email" : {
+          "type" : "string",
+          "example" : "timtam@example.com"
+        }
+      },
+      "xml" : {
+        "name" : "Applicant"
+      }
+    },
+    "Listing" : {
+      "type" : "object",
+      "required" : [ "listingid", "companyid", "roleid" ],
+      "properties" : {
+        "id" : {
+          "type" : "integer",
+          "format" : "int64"
+        },
+        "company" : {
+          "type" : "object"
+        },
+        "role" : {
+          "type" : "object"
+        }
+      }
+    }
+  },
+  "externalDocs" : {
+    "description" : "Find out more about Swagger",
+    "url" : "http://swagger.io"
+  },
+  "host" : "virtserver.swaggerhub.com",
+  "basePath" : "/uyanda/mytest/1.0.0",
+  "schemes" : [ "https", "http" ]
+}
